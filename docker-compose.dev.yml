@@ -1,0 +1,34 @@
+services:
+  client:
+    build: ./client
+    ports:
+      - 8080:3000
+    volumes:
+      - ./client/src:/app/src
+    command: npm start
+  server:
+    # plutot que de referencer l'image ...
+    # image: docker-express
+    # ports:
+    # #on expose le port 5000 de server au port 5050 de ta machine :
+    #   - 5050:5000
+    
+    # ... on va préciser à docker composer où se trouve le dockerfile de notre image
+    build: ./server
+    ports:
+      - 5050:5000
+    command: npm run dev
+
+    # Pour lancer la compilation et démarrer les conteneurs :
+    # docker compose -f docker-compose.dev.yml up
+
+    # connecter un volume au container, un peu comme une clé usb
+    # Ici on va connecter server/src/ de notre machine à /app/src/ du conteneur.
+    volumes:
+      - ./server/src:/app/src
+  mongodb:
+    image: mongo
+
+    # On peut aussi utiliser les volumes pour persister les données du conteneur mongodb.
+    volumes:
+      - ./data:/data/db
